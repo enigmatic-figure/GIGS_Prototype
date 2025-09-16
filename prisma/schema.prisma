@@ -6,11 +6,135 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
-  // For PostgreSQL in production, change to:
-  // provider = "postgresql"
 }
 
-// Models will be added in the next phase
-// Core entities: User, Event, Gig, Application, etc.
+enum Role {
+  WORKER
+  EMPLOYER
+  ADMIN
+}
+
+enum JobStatus {
+  OPEN
+  PARTIALLY_FILLED
+  FILLED
+  CANCELLED
+}
+
+enum BookingStatus {
+  OFFERED
+  ACCEPTED
+  DECLINED
+  CANCELLED
+  COMPLETED
+}
+
+enum PayoutStatus {
+  PENDING
+  PAID
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  VOID
+}
+
+model User {
+  id              String           @id @default(cuid())
+  email           String           @unique
+  name            String?
+  phone           String?
+  role            Role
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  workerProfile   WorkerProfile?
+  employerProfile EmployerProfile?
+}
+
+model WorkerProfile {
+  id             String             @id @default(cuid())
+  userId         String             @unique
+  user           User               @relation(fields: [userId], references: [id])
+  skills         String[]
+  minRate        Int
+  maxRate        Int
+  radiusKm       Int
+  homeLat        Float
+  homeLng        Float
+  availability   AvailabilitySlot[]
+  bookings       Booking[]
+}
+
+model EmployerProfile {
+  id       String        @id @default(cuid())
+  userId   String        @unique
+  user     User          @relation(fields: [userId], references: [id])
+  company  String
+  website  String?
+  jobs     JobPosting[]
+}
+
+model AvailabilitySlot {
+  id       String         @id @default(cuid())
+  workerId String
+  worker   WorkerProfile  @relation(fields: [workerId], references: [id])
+  start    DateTime
+  end      DateTime
+  rolesOk  String[]
+  minRate  Int
+}
+
+model JobPosting {
+  id           String       @id @default(cuid())
+  employerId   String
+  employer     EmployerProfile @relation(fields: [employerId], references: [id])
+  title        String
+  description  String
+  location     String
+  lat          Float?
+  lng          Float?
+  start        DateTime
+  end          DateTime
+  neededRoles  String[]
+  headcount    Int
+  rate         Int
+  status       JobStatus    @default(OPEN)
+  bookings     Booking[]
+}
+
+model Booking {
+  id        String         @id @default(cuid())
+  jobId     String
+  job       JobPosting     @relation(fields: [jobId], references: [id])
+  workerId  String
+  worker    WorkerProfile  @relation(fields: [workerId], references: [id])
+  status    BookingStatus  @default(OFFERED)
+  createdAt DateTime       @default(now())
+}
+
+model Invoice {
+  id          String         @id @default(cuid())
+  employerId  String
+  employer    EmployerProfile @relation(fields: [employerId], references: [id])
+  jobId       String
+  job         JobPosting     @relation(fields: [jobId], references: [id])
+  amountCents Int
+  status      InvoiceStatus  @default(DRAFT)
+  pdfUrl      String?
+  createdAt   DateTime       @default(now())
+}
+
+model Payout {
+  id          String         @id @default(cuid())
+  workerId    String
+  worker      WorkerProfile  @relation(fields: [workerId], references: [id])
+  bookingId   String
+  booking     Booking        @relation(fields: [bookingId], references: [id])
+  amountCents Int
+  status      PayoutStatus   @default(PENDING)
+  createdAt   DateTime       @default(now())
+}

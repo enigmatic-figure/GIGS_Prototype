@@ -18,7 +18,7 @@ An Uber-like marketplace connecting event organizers with qualified staff for se
 3. **Set up the database:**
    ```bash
    pnpm db:migrate
-   pnpm db:seed
+   pnpm prisma db seed
    ```
 
 4. **Start the development server:**
@@ -32,7 +32,7 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 - **Framework:** Next.js 15 (App Router)
 - **Language:** TypeScript
-- **Database:** Prisma ORM with SQLite (dev) / PostgreSQL (prod)
+- **Database:** Prisma ORM with PostgreSQL
 - **Styling:** Tailwind CSS + shadcn/ui
 - **Forms:** React Hook Form + Zod validation
 - **State Management:** Zustand
@@ -61,29 +61,22 @@ Open [http://localhost:3000](http://localhost:3000) to see the application.
 
 ## 🗄️ Database
 
-### Development (SQLite)
-The project uses SQLite for local development with the database file at `./dev.db`.
+### Development (PostgreSQL)
+The Prisma data model uses PostgreSQL-specific features (array columns for skills, roles, and availability). Configure a local PostgreSQL database and set the `DATABASE_URL` in your `.env` file, for example:
+
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/gigs_db"
+```
+
+After updating the environment variables, run migrations and seed data:
+
+```bash
+pnpm db:migrate
+pnpm prisma db seed
+```
 
 ### Production (PostgreSQL)
-To switch to PostgreSQL for production:
-
-1. Update your `.env` file:
-   ```env
-   DATABASE_URL="postgresql://username:password@localhost:5432/gigs_db"
-   ```
-
-2. Update `prisma/schema.prisma`:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
-   ```
-
-3. Run migrations:
-   ```bash
-   pnpm db:migrate
-   ```
+Use a managed PostgreSQL instance (Neon, Supabase, RDS, etc.) and update the `DATABASE_URL` accordingly before running migrations and seeding production data.
 
 ## 🔧 Available Scripts
 
@@ -97,6 +90,7 @@ To switch to PostgreSQL for production:
 - `pnpm db:migrate` - Run database migrations
 - `pnpm db:studio` - Open Prisma Studio
 - `pnpm db:seed` - Seed database with sample data
+- `pnpm prisma db seed` - Run Prisma's seeding command (invokes the script above)
 
 ## 🚧 Current Status (MVP Phase)
 
@@ -132,7 +126,7 @@ This is an MVP development project. For contribution guidelines and development 
 ## ⚠️ Known Limitations (MVP)
 
 1. **Demo Data Only:** Currently uses mock data for demonstration
-2. **SQLite Development:** Production PostgreSQL setup required for deployment
+2. **PostgreSQL Required:** Ensure access to a PostgreSQL instance for local and production environments
 3. **Basic Authentication:** Advanced OAuth providers not yet implemented
 4. **Limited Payment Processing:** Stripe integration in development
 5. **No Real-time Features:** WebSocket implementation planned for next phase
