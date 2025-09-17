@@ -2,7 +2,11 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/database";
 import { applyRateLimit, identifyRequest } from "@/lib/rate-limit";
-import { availabilityQuerySchema, createAvailabilitySchema } from "@/lib/schemas";
+import {
+  availabilityQuerySchema,
+  createAvailabilitySchema,
+  deleteAvailabilitySchema,
+} from "@/lib/schemas";
 
 function rateHeaders(limit: ReturnType<typeof applyRateLimit>) {
   return {
@@ -108,6 +112,45 @@ export async function POST(request: Request) {
     console.error("Failed to create availability slot", error);
     return NextResponse.json(
       { message: "Failed to create availability slot." },
+      { status: 500, headers: rateHeaders(limit) }
+    );
+  }
+}
+
+export async function DELETE(request: Request) {
+  const identifier = identifyRequest(request);
+  const limit = applyRateLimit({ key: `availability:delete:${identifier}`, limit: 20 });
+
+  if (!limit.success) {
+    return NextResponse.json(
+      { message: "Too many requests." },
+      { status: 429, headers: rateHeaders(limit) }
+    );
+  }
+
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
+
+  const parsed = deleteAvailabilitySchema.safeParse({ id });
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { message: "Invalid availability id", errors: parsed.error.flatten() },
+      { status: 400, headers: rateHeaders(limit) }
+    );
+  }
+
+  try {
+    await prisma.availabilitySlot.delete({ where: { id: parsed.data.id } });
+
+    return NextResponse.json(
+      { message: "Availability slot removed" },
+      { headers: rateHeaders(limit) }
+    );
+  } catch (error) {
+    console.error("Failed to delete availability slot", error);
+    return NextResponse.json(
+      { message: "Failed to delete availability slot." },
       { status: 500, headers: rateHeaders(limit) }
     );
   }

@@ -5,11 +5,14 @@
  * Features hero section, benefits overview, how it works, and call-to-action.
  */
 
+import Link from "next/link";
+import { Users, Calendar, MapPin, Star, ArrowRight, CheckCircle, Shield, Clock, Workflow, Briefcase } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Calendar, MapPin, Star, ArrowRight, CheckCircle, Shield, Clock } from "lucide-react";
-import Link from "next/link";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { APP_CONFIG } from "@/lib/constants";
 
 /**
@@ -81,6 +84,67 @@ const howItWorksSteps = [
   },
 ];
 
+const employerFlow = [
+  {
+    title: "Create a job",
+    description: "Enter event details, roles, rates, and headcount in under two minutes.",
+  },
+  {
+    title: "Review suggested workers",
+    description: "We surface the best matches ranked by skills, availability, and distance.",
+  },
+  {
+    title: "Send invitations",
+    description: "Track confirmations in real time and top up invites when needed.",
+  },
+  {
+    title: "Run the event",
+    description: "Once the job is filled, invoices and payouts are ready with one click.",
+  },
+];
+
+const workerFlow = [
+  {
+    title: "Complete onboarding",
+    description: "Tell us your skills, preferred rates, and travel radius to unlock matches.",
+  },
+  {
+    title: "Publish availability",
+    description: "Drop-in calendar slots so employers know when you can work.",
+  },
+  {
+    title: "Review invitations",
+    description: "Accept or decline offers, chat with organizers, and confirm arrival details.",
+  },
+  {
+    title: "Get paid",
+    description: "Automatic payout stubs and earnings history keep everything transparent.",
+  },
+];
+
+const faqs = [
+  {
+    question: "How quickly can I staff an event?",
+    answer:
+      "Most organizers secure confirmed staff within a few hours. Our matching engine prioritizes workers who are nearby, qualified, and currently available.",
+  },
+  {
+    question: "Do workers need special certifications?",
+    answer:
+      "We support everything from brand ambassadors to technical crew. You can require certifications (e.g., alcohol service permits) and verify them inside the booking.",
+  },
+  {
+    question: "How are payments handled?",
+    answer:
+      "Employers approve timesheets and generate invoices directly from the dashboard. Workers receive payout stubs with tax information once events are completed.",
+  },
+  {
+    question: "Is there a mobile experience?",
+    answer:
+      "Yes. The dashboard is fully responsive so teams can confirm shifts, chat, and check-in from any device on-site.",
+  },
+];
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-gray-50">
@@ -102,8 +166,11 @@ export default function LandingPage() {
               <Link href="#how-it-works" className="text-gray-600 hover:text-gray-900 transition-colors">
                 How it Works
               </Link>
-              <Link href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">
-                Pricing
+              <Link href="#flows" className="text-gray-600 hover:text-gray-900 transition-colors">
+                Flows
+              </Link>
+              <Link href="#faq" className="text-gray-600 hover:text-gray-900 transition-colors">
+                FAQ
               </Link>
             </nav>
             
@@ -220,6 +287,109 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Role flows */}
+      <section id="flows" className="py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Purpose-built for both sides</h2>
+            <p className="mt-4 text-lg text-gray-600">Switch between employer and worker flows to see what the experience looks like.</p>
+          </div>
+
+          <Tabs defaultValue="employer" className="mx-auto mt-16 max-w-5xl">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="employer" className="flex items-center justify-center gap-2">
+                <Briefcase className="h-4 w-4" /> Employer
+              </TabsTrigger>
+              <TabsTrigger value="worker" className="flex items-center justify-center gap-2">
+                <Workflow className="h-4 w-4" /> Worker
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="employer" className="mt-8">
+              <div className="grid gap-6 md:grid-cols-2">
+                {employerFlow.map((step, index) => (
+                  <Card key={step.title}>
+                    <CardHeader>
+                      <Badge variant="secondary" className="w-fit">Step {index + 1}</Badge>
+                      <CardTitle>{step.title}</CardTitle>
+                      <CardDescription>{step.description}</CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+            <TabsContent value="worker" className="mt-8">
+              <div className="grid gap-6 md:grid-cols-2">
+                {workerFlow.map((step, index) => (
+                  <Card key={step.title}>
+                    <CardHeader>
+                      <Badge variant="secondary" className="w-fit">Step {index + 1}</Badge>
+                      <CardTitle>{step.title}</CardTitle>
+                      <CardDescription>{step.description}</CardDescription>
+                    </CardHeader>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section id="pricing" className="bg-gray-900 py-24 text-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Simple pricing for launch</h2>
+            <p className="mt-4 text-lg text-gray-300">Use the fully featured MVP for free while we’re in beta.</p>
+          </div>
+          <div className="mx-auto mt-16 max-w-5xl">
+            <div className="grid gap-8 lg:grid-cols-3">
+              <Card className="border-white/10 bg-white/5">
+                <CardHeader>
+                  <CardTitle className="text-xl">Employers</CardTitle>
+                  <CardDescription className="text-gray-300">Unlimited job posts and invitations.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm text-gray-200">
+                  <p className="text-3xl font-semibold text-white">$0</p>
+                  <ul className="space-y-2">
+                    <li>✓ Unlimited events</li>
+                    <li>✓ Team collaboration</li>
+                    <li>✓ Invoicing & analytics</li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card className="border-white/10 bg-white text-gray-900">
+                <CardHeader>
+                  <CardTitle className="text-xl">Workers</CardTitle>
+                  <CardDescription>Keep 100% of your hourly rate during beta.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <p className="text-3xl font-semibold text-gray-900">$0</p>
+                  <ul className="space-y-2">
+                    <li>✓ Instant payouts</li>
+                    <li>✓ Ratings & badges</li>
+                    <li>✓ Availability calendar</li>
+                  </ul>
+                </CardContent>
+              </Card>
+              <Card className="border-white/10 bg-white/5">
+                <CardHeader>
+                  <CardTitle className="text-xl">Admin</CardTitle>
+                  <CardDescription className="text-gray-300">Operational tooling for finance teams.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm text-gray-200">
+                  <p className="text-3xl font-semibold text-white">$0</p>
+                  <ul className="space-y-2">
+                    <li>✓ Invoice generation</li>
+                    <li>✓ Payout reconciliation</li>
+                    <li>✓ KPI dashboards</li>
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="bg-blue-600 py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -246,19 +416,52 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl space-y-10">
+            <div className="text-center">
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Frequently asked questions</h2>
+              <p className="mt-4 text-lg text-gray-600">Everything you need to know before running your next event.</p>
+            </div>
+            <Accordion type="single" collapsible className="space-y-3">
+              {faqs.map((faq, index) => (
+                <AccordionItem key={faq.question} value={`faq-${index}`} className="rounded-lg border bg-white px-4">
+                  <AccordionTrigger className="text-left text-base font-medium text-gray-900">
+                    {faq.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-sm text-gray-600">
+                    {faq.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-gray-900 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center space-x-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-600 text-white font-bold">
                 G
               </div>
               <span className="text-xl font-bold">{APP_CONFIG.name}</span>
             </div>
-            <p className="text-gray-400">
-              © 2024 {APP_CONFIG.name}. {APP_CONFIG.version}
-            </p>
+            <div className="flex gap-6 text-sm text-gray-400">
+              <Link href="mailto:support@gigs.com" className="hover:text-white">
+                support@gigs.com
+              </Link>
+              <Link href="/privacy" className="hover:text-white">
+                Privacy
+              </Link>
+              <Link href="/terms" className="hover:text-white">
+                Terms
+              </Link>
+            </div>
+            <p className="text-gray-400">© {new Date().getFullYear()} {APP_CONFIG.name}. {APP_CONFIG.version}</p>
           </div>
         </div>
       </footer>

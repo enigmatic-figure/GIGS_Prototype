@@ -5,7 +5,7 @@ const cuid = () => z.string().cuid("Invalid identifier");
 
 const skillEnum = z.enum(STAFF_ROLES as [string, ...string[]]);
 
-const workerProfileInputSchema = z
+export const workerProfileInputSchema = z
   .object({
     skills: z.array(skillEnum).min(1),
     minRate: z.number().min(LIMITS.MIN_HOURLY_RATE),
@@ -18,6 +18,10 @@ const workerProfileInputSchema = z
     message: "maxRate must be greater than or equal to minRate",
     path: ["maxRate"],
   });
+
+export const updateWorkerProfileSchema = workerProfileInputSchema.extend({
+  workerId: cuid(),
+});
 
 export const createUserSchema = z
   .object({
