@@ -11,6 +11,7 @@ import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { ErrorBoundary } from '@/components/ui/error-boundary';
 import { APP_CONFIG } from '@/lib/constants';
+import { AppProviders } from './providers';
 
 /**
  * Inter font configuration for optimal performance
@@ -82,11 +83,13 @@ export default function RootLayout({
         inter.variable,
         "min-h-screen antialiased font-sans bg-background text-foreground"
       )}>
-        <ErrorBoundary>
-          <div id="app-root" className="relative">
-            {children}
-          </div>
-        </ErrorBoundary>
+        <AppProviders>
+          <ErrorBoundary>
+            <div id="app-root" className="relative">
+              {children}
+            </div>
+          </ErrorBoundary>
+        </AppProviders>
         
         {/* Portal for modals and overlays */}
         <div id="modal-root" />
