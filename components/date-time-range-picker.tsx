@@ -91,7 +91,7 @@ export function DateTimeRangePicker({
     const baseStart = applyTime(nextRange.from, selectedStartTime);
     const baseEnd = nextRange.to ? applyTime(nextRange.to, selectedEndTime) : applyTime(nextRange.from, selectedEndTime);
 
-    let nextStart = baseStart;
+    const nextStart = baseStart;
     let nextEnd = baseEnd;
 
     if (nextEnd <= nextStart) {

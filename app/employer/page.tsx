@@ -41,10 +41,18 @@ export default async function EmployerDashboard({ searchParams }: PageProps) {
   const activeJobs = employer.jobs.filter((job) =>
     job.status === JOB_STATUS.OPEN || job.status === JOB_STATUS.PARTIALLY_FILLED
   );
-  const pendingInvites = employer.jobs.reduce((sum, job) => sum + job.bookings.filter((booking) => booking.status === BOOKING_STATUS.OFFERED).length, 0);
-  const confirmed = employer.jobs.reduce((sum, job) => sum + job.bookings.filter((booking) => booking.status === BOOKING_STATUS.ACCEPTED).length, 0);
+  const pendingInvites = employer.jobs.reduce(
+    (sum, job) => sum + job.bookings.filter((booking) => booking.status === BOOKING_STATUS.OFFERED).length,
+    0
+  );
+  const confirmed = employer.jobs.reduce(
+    (sum, job) => sum + job.bookings.filter((booking) => booking.status === BOOKING_STATUS.ACCEPTED).length,
+    0
+  );
 
   const upcomingJobs = employer.jobs.slice(0, 5);
+  const suggestionsJobId = activeJobs[0]?.id ?? employer.jobs[0]?.id ?? null;
+  const viewSuggestionsHref = suggestionsJobId ? `/employer/candidates/${suggestionsJobId}` : null;
 
   return (
     <div className="space-y-10">
@@ -62,9 +70,11 @@ export default async function EmployerDashboard({ searchParams }: PageProps) {
               <Button asChild>
                 <Link href="/employer/jobs/new">Post a job</Link>
               </Button>
-              <Button asChild variant="outline">
-                <Link href="/employer/candidates/${activeJobs[0]?.id ?? employer.jobs[0]?.id ?? ""}">View suggestions</Link>
-              </Button>
+              {viewSuggestionsHref ? (
+                <Button asChild variant="outline">
+                  <Link href={viewSuggestionsHref}>View suggestions</Link>
+                </Button>
+              ) : null}
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4 md:w-80">
@@ -172,7 +182,7 @@ export default async function EmployerDashboard({ searchParams }: PageProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {upcomingJobs.length ? (
+              {upcomingJobs.length > 0 ? (
                 upcomingJobs.map((job) => {
                   const invited = job.bookings.filter((b) => b.status === BOOKING_STATUS.OFFERED).length;
                   const accepted = job.bookings.filter((b) => b.status === BOOKING_STATUS.ACCEPTED).length;

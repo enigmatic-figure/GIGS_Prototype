@@ -11,6 +11,11 @@ import {
   type WorkerProfile,
 } from "@prisma/client";
 
+if (!process.env.DATABASE_URL) {
+  console.warn("⚠️ Skipping seed: DATABASE_URL is not defined.");
+  process.exit(0);
+}
+
 const prisma = new PrismaClient();
 
 type WorkerSeed = {
