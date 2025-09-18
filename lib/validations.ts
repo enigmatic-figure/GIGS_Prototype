@@ -29,7 +29,7 @@ export const createJobSchema = z.object({
   lng: z.number().min(-180).max(180).optional(),
   start: z.date().min(new Date(), 'Start time must be in the future'),
   end: z.date(),
-  neededRoles: z.array(z.enum(STAFF_ROLES as any))
+  neededRoles: z.array(z.enum(STAFF_ROLES))
     .min(1, 'At least one role is required'),
   headcount: z.number().min(1, 'At least 1 person is required').max(100),
   rate: z.number()
@@ -50,7 +50,7 @@ export const createJobSchema = z.object({
  * Worker profile validation schemas
  */
 export const createWorkerProfileSchema = z.object({
-  skills: z.array(z.enum(STAFF_ROLES as any))
+  skills: z.array(z.enum(STAFF_ROLES))
     .min(1, 'At least one skill is required'),
   minRate: z.number()
     .min(LIMITS.MIN_HOURLY_RATE, `Minimum rate must be at least $${LIMITS.MIN_HOURLY_RATE}`),
@@ -80,7 +80,7 @@ export const createEmployerProfileSchema = z.object({
 export const availabilitySlotSchema = z.object({
   start: z.date().min(new Date(), 'Availability must be in the future'),
   end: z.date(),
-  rolesOk: z.array(z.enum(STAFF_ROLES as any))
+  rolesOk: z.array(z.enum(STAFF_ROLES))
     .min(1, 'At least one role must be selected'),
   minRate: z.number()
     .min(LIMITS.MIN_HOURLY_RATE, `Rate must be at least $${LIMITS.MIN_HOURLY_RATE}`),
@@ -103,7 +103,7 @@ export const bookingApplicationSchema = z.object({
 export const jobSearchSchema = z.object({
   location: z.string().optional(),
   radius: z.number().min(1).max(100).optional(),
-  roles: z.array(z.enum(STAFF_ROLES as any)).optional(),
+  roles: z.array(z.enum(STAFF_ROLES)).optional(),
   minRate: z.number().min(LIMITS.MIN_HOURLY_RATE).optional(),
   maxRate: z.number().max(LIMITS.MAX_HOURLY_RATE).optional(),
   startDate: z.date().optional(),
@@ -113,7 +113,7 @@ export const jobSearchSchema = z.object({
 export const workerSearchSchema = z.object({
   location: z.string().optional(),
   radius: z.number().min(1).max(100).optional(),
-  skills: z.array(z.enum(STAFF_ROLES as any)).optional(),
+  skills: z.array(z.enum(STAFF_ROLES)).optional(),
   minRate: z.number().min(LIMITS.MIN_HOURLY_RATE).optional(),
   maxRate: z.number().max(LIMITS.MAX_HOURLY_RATE).optional(),
   availableFrom: z.date().optional(),

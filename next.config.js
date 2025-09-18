@@ -4,14 +4,12 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-  images: { 
+  images: {
     unoptimized: true,
-    domains: ['images.pexels.com', 'pexels.com']
+    domains: ['images.pexels.com', 'pexels.com'],
   },
   typescript: { ignoreBuildErrors: false },
-  experimental: {
-    serverComponentsExternalPackages: ['@prisma/client', 'prisma']
-  }
+  serverExternalPackages: ['@prisma/client', 'prisma'],
 };
 
 module.exports = nextConfig;
